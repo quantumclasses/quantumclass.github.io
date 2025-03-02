@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Classes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #007bff;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+            width: 300px;
+            margin: auto;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #otpSection, #welcomeMessage, #forgotPasswordSection, #newPasswordSection {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Welcome to Quantum Classes</h1>
+    
+    <div class="container" id="mainSection">
+        <button onclick="showLogin()">Sign In</button>
+        <button onclick="showSignup()">Sign Up</button>
+    </div>
+
+    <!-- Login Form -->
+    <div class="container" id="loginSection" style="display: none;">
+        <h2>Sign In</h2>
+        <input type="text" id="loginUsername" placeholder="Enter Username">
+        <input type="password" id="loginPin" placeholder="Enter PIN">
+        <button onclick="login()">Login</button>
+        <p><a href="#" onclick="showForgotPassword()">Forgot Password?</a></p>
+        <button onclick="goBack()">Back</button>
+    </div>
+
+    <!-- Signup Form -->
+    <div class="container" id="signupSection" style="display: none;">
+        <h2>Sign Up</h2>
+        <input type="text" id="fullName" placeholder="Full Name">
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="pin" placeholder="PIN">
+        <input type="text" id="mobile" placeholder="Mobile No.">
+        <button onclick="sendOTP('signup')">Submit</button>
+        <button onclick="goBack()">Back</button>
+    </div>
+
+    <!-- OTP Verification -->
+    <div class="container" id="otpSection">
+        <h2>OTP Verification</h2>
+        <p>OTP Sent to your Mobile</p>
+        <input type="text" id="otpInput" placeholder="Enter OTP">
+        <button onclick="verifyOTP()">Verify OTP</button>
+    </div>
+
+    <!-- Forgot Password Section -->
+    <div class="container" id="forgotPasswordSection">
+        <h2>Forgot Password</h2>
+        <input type="text" id="forgotMobile" placeholder="Enter Mobile No.">
+        <button onclick="sendOTP('forgot')">Send OTP</button>
+        <button onclick="goBack()">Back</button>
+    </div>
+
+    <!-- New Password Section -->
+    <div class="container" id="newPasswordSection">
+        <h2>Set New Password</h2>
+        <input type="password" id="newPassword" placeholder="Enter New Password">
+        <button onclick="setNewPassword()">Update Password</button>
+    </div>
+
+    <!-- Welcome Message -->
+    <div id="welcomeMessage">
+        <h1 style="color: green;">🎉 Welcome to Quantum Classes! 🎉</h1>
+        <p>Your account has been successfully created.</p>
+    </div>
+
+    <script>
+        let otpForUser = {}; // Store OTPs for verification
+
+        function showLogin() {
+            document.getElementById("mainSection").style.display = "none";
+            document.getElementById("loginSection").style.display = "block";
+        }
+
+        function showSignup() {
+            document.getElementById("mainSection").style.display = "none";
+            document.getElementById("signupSection").style.display = "block";
+        }
+
+        function showForgotPassword() {
+            document.getElementById("loginSection").style.display = "none";
+            document.getElementById("forgotPasswordSection").style.display = "block";
+        }
+
+        function goBack() {
+            document.getElementById("loginSection").style.display = "none";
+            document.getElementById("signupSection").style.display = "none";
+            document.getElementById("forgotPasswordSection").style.display = "none";
+            document.getElementById("mainSection").style.display = "block";
+        }
+
+        function sendOTP(type) {
+            let mobile;
+            if (type === "signup") {
+                mobile = document.getElementById("mobile").value;
+            } else {
+                mobile = document.getElementById("forgotMobile").value;
+            }
+
+            if (mobile.length !== 10) {
+                alert("Please enter a valid 10-digit mobile number.");
+                return;
+            }
+
+            let generatedOTP = "1234"; // Demo OTP
+            otpForUser[mobile] = generatedOTP;
+
+            document.getElementById("signupSection").style.display = "none";
+            document.getElementById("forgotPasswordSection").style.display = "none";
+            document.getElementById("otpSection").style.display = "block";
+        }
+
+        function verifyOTP() {
+            let enteredOTP = document.getElementById("otpInput").value;
+            let mobile = document.getElementById("mobile").value || document.getElementById("forgotMobile").value;
+
+            if (enteredOTP === otpForUser[mobile]) {
+                document.getElementById("otpSection").style.display = "none";
+
+                if (document.getElementById("forgotMobile").value) {
+                    document.getElementById("newPasswordSection").style.display = "block";
+                } else {
+                    document.getElementById("welcomeMessage").style.display = "block";
+                    setTimeout(() => {
+                        window.location.href = "main.html";
+                    }, 3000);
+                }
+            } else {
+                alert("❌ Wrong OTP. Please try again.");
+            }
+        }
+
+        function setNewPassword() {
+            alert("✅ Password Updated Successfully! Now, log in with your new password.");
+            document.getElementById("newPasswordSection").style.display = "none";
+            document.getElementById("loginSection").style.display = "block";
+        }
+
+        function login() {
+            alert("✅ Login Successful! Redirecting...");
+            setTimeout(() => {
+                window.location.href = "main.html";
+            }, 2000);
+        }
+    </script>
+
+</body>
+</html>
